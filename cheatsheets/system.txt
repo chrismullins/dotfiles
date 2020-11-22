@@ -1,0 +1,53 @@
+# On boot, check the network status
+  $ systemctl status dhcpcd@wlp0s20f3
+# This should be enabled and running
+# If it is, access the network by start wpa_supplicant on the same interface
+  $ systemctl start wpa_supplicant@wlp0s20f3
+
+# To get right monitor rotated correctly:
+# View monitors with
+  $ xrandr --query
+# Then once you've chosen the one to rotate:
+  $ xrandr --output DP-2 --rotate left
+
+# Connect to NordVPN!
+ $ nordvpn connect
+
+# To add entries to kernel line, add them in the options line of the following file
+  /boot/loader/entries/arch.conf
+
+# Connect with PIA!
+  Two ways, but first, you need to make the file accessible to openvpn.  
+  Look in /home/chris/PIA and get the one you want, copy it into /etc/openvpn/client
+	but REPLACE the SPACES with UNDERSCORES, and the extension with .conf:
+	'US Seattle.ovpn' => US_Seattle.conf
+ 
+  The quick way: at this point you can run
+    $ openvpn /etc/openvpn/client/US_Seattle.conf
+  and it'll accept your credentials (look em up in your FF 1PasswordX extension).
+
+  The better way: look in the .conf file for the user-auth-pass line, and add PIALogin.txt after it.
+  Now you can run:
+    $ systemctl start openvpn-client@US_Seattle.service
+
+# Connect the mouse
+  Check to make sure bluetooth is running:\
+  $ systemctl status bluetooth
+  May need to restart it
+  $ systemctl restart bluetooth
+
+  IF that doesn't work, reconnect with bluetoothctl:
+  $ bluetoothctl
+    > paired-devices # list the paired devies, it's probably there
+    > remove XX:XX:XX:XX:XX:XX # remove it
+    > power off  # power off the bt controller
+    > power on   # power it on
+    > scan on # wait til you can see the mouse you're looking for
+    > trust XX:XX:XX:XX:XX:XX
+    > pair XX:XX:XX:XX:XX:XX
+    > connect XX:XX:XX:XX:XX:XX
+
+# Lock screen
+  Mod (alt) + Ctrl + l (as in Lock)
+  Find the binding in the ~/.config/i3/config file
+  Basically it just runs `bindsym <KEYBOARD_SHORTCUT> exec <PATH_TO_I3LOCK_SOLARIZED>/bin/i3lock-solarized-<STYLE>.sh`
