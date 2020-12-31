@@ -27,6 +27,9 @@
   and it'll accept your credentials (look em up in your FF 1PasswordX extension).
 
   The better way: look in the .conf file for the user-auth-pass line, and add PIALogin.txt after it.
+  PIALogin.txt has two lines, 1 being your PIA username, 2 being you password.
+  Make sure to run `chmod 600` on it, or look in your logs for a warning: 
+    > WARNING: file 'PIALogin.txt' is group or others accessible
   Now you can run:
     $ systemctl start openvpn-client@US_Seattle.service
 
