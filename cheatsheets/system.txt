@@ -48,8 +48,13 @@
     > trust XX:XX:XX:XX:XX:XX
     > pair XX:XX:XX:XX:XX:XX
     > connect XX:XX:XX:XX:XX:XX
+    > unblock
+  If the mouse is still not working, try toggling the on/off on the MOUSE.
 
 # Lock screen
   Mod (alt) + Ctrl + l (as in Lock)
   Find the binding in the ~/.config/i3/config file
   Basically it just runs `bindsym <KEYBOARD_SHORTCUT> exec <PATH_TO_I3LOCK_SOLARIZED>/bin/i3lock-solarized-<STYLE>.sh`
+
+# Find valid font names
+fc-list : family style | grep Pragmata

@@ -1,0 +1,5 @@
+These are hooks that go in /etc/pacman.d/hooks
+
+1. nvidia.hook
+ - source: https://wiki.archlinux.org/title/NVIDIA
+ - updates initramfs via mkinitcpio so I don't forget to do it every time there's an NVIDIA driver upgrade

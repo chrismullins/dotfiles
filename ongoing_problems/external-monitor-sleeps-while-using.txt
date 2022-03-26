@@ -1,0 +1,837 @@
+I just installed the nvidia drivers and haven't yet configured bbswitch. When I'm using it through the caldigit dock, the monitor seems to lose signal for 5-10s, then turn back on.  
+
+What also happens is that everything else plugged in to the caldigit dock is lost, namely my USB keyboard.
+
+[NO this did NOT solve it, but did allow me to connect the dock and use everything connected to it immediately.] This was SOLVED using boltctl. boltctl list and boltctl authorize <UUID> for the caldigit seems to have fixed it.
+
+Relevant topic: https://bbs.archlinux.org/viewtopic.php?id=236536
+ - Suggests: disabling USB suspect for xHCI controllers
+   - I will try disabling USB autosuspect with TLP
+
+
+Logs from Xorg:
+
+Some useful links:
+https://daenney.github.io/2017/11/16/linux-thunberbolt-security
+https://wiki.archlinux.org/title/Thunderbolt
+
+
+[  5883.173] (--) NVIDIA(GPU-0): DFP-1: disconnected
+[  5883.173] (--) NVIDIA(GPU-0): DFP-1: Internal DisplayPort
+[  5883.173] (--) NVIDIA(GPU-0): DFP-1: 2660.0 MHz maximum pixel clock
+[  5883.173] (--) NVIDIA(GPU-0):
+[  5883.242] (--) NVIDIA(GPU-0): DFP-0: disconnected
+[  5883.242] (--) NVIDIA(GPU-0): DFP-0: Internal DisplayPort
+[  5883.242] (--) NVIDIA(GPU-0): DFP-0: 2660.0 MHz maximum pixel clock
+[  5883.242] (--) NVIDIA(GPU-0):
+[  5894.741] (--) NVIDIA(GPU-0): DELL S3221QS (DFP-1): connected
+[  5894.741] (--) NVIDIA(GPU-0): DELL S3221QS (DFP-1): Internal DisplayPort
+[  5894.741] (--) NVIDIA(GPU-0): DELL S3221QS (DFP-1): 2660.0 MHz maximum pixel clock
+[  5894.741] (--) NVIDIA(GPU-0):
+[  5895.422] (--) NVIDIA(GPU-0): DELL U2412M (DFP-0): connected
+[  5895.422] (--) NVIDIA(GPU-0): DELL U2412M (DFP-0): Internal DisplayPort
+[  5895.422] (--) NVIDIA(GPU-0): DELL U2412M (DFP-0): 2660.0 MHz maximum pixel clock
+[  5895.422] (--) NVIDIA(GPU-0):
+
+Logs from journalctl -f:
+Feb 12 18:09:40 lapbox rtkit-daemon[1578]: Supervising 8 threads of 2 processes of 1 users.
+Feb 12 18:09:40 lapbox rtkit-daemon[1578]: Supervising 8 threads of 2 processes of 1 users.
+Feb 12 18:09:44 lapbox rtkit-daemon[1578]: Supervising 8 threads of 2 processes of 1 users.
+Feb 12 18:09:44 lapbox rtkit-daemon[1578]: Supervising 8 threads of 2 processes of 1 users.
+Feb 12 18:09:45 lapbox rtkit-daemon[1578]: Supervising 8 threads of 2 processes of 1 users.
+Feb 12 18:09:45 lapbox rtkit-daemon[1578]: Supervising 8 threads of 2 processes of 1 users.
+Feb 12 18:09:45 lapbox rtkit-daemon[1578]: Supervising 8 threads of 2 processes of 1 users.
+Feb 12 18:09:45 lapbox rtkit-daemon[1578]: Supervising 8 threads of 2 processes of 1 users.
+Feb 12 18:09:45 lapbox rtkit-daemon[1578]: Successfully made thread 4766 of process 4561 owned by '1000' RT at priority 10.
+Feb 12 18:09:45 lapbox rtkit-daemon[1578]: Supervising 9 threads of 3 processes of 1 users.
+Feb 12 18:09:53 lapbox rtkit-daemon[1578]: Supervising 8 threads of 2 processes of 1 users.
+Feb 12 18:09:53 lapbox rtkit-daemon[1578]: Supervising 8 threads of 2 processes of 1 users.
+Feb 12 18:09:53 lapbox rtkit-daemon[1578]: Supervising 8 threads of 2 processes of 1 users.
+Feb 12 18:09:53 lapbox rtkit-daemon[1578]: Supervising 8 threads of 2 processes of 1 users.
+Feb 12 18:09:53 lapbox rtkit-daemon[1578]: Successfully made thread 4786 of process 3398 owned by '1000' RT at priority 10.
+Feb 12 18:09:53 lapbox rtkit-daemon[1578]: Supervising 9 threads of 3 processes of 1 users.
+Feb 12 18:14:19 lapbox kernel: xhci_hcd 0000:0d:00.0: remove, state 4
+Feb 12 18:14:19 lapbox kernel: usb usb10: USB disconnect, device number 1
+Feb 12 18:14:19 lapbox kernel: usb 10-2: USB disconnect, device number 2
+Feb 12 18:14:19 lapbox kernel: xhci_hcd 0000:0d:00.0: USB bus 10 deregistered
+Feb 12 18:14:19 lapbox kernel: xhci_hcd 0000:0d:00.0: xHCI host controller not responding, assume dead
+Feb 12 18:14:19 lapbox kernel: xhci_hcd 0000:0d:00.0: remove, state 1
+Feb 12 18:14:19 lapbox kernel: usb usb9: USB disconnect, device number 1
+Feb 12 18:14:19 lapbox kernel: usb 9-2: USB disconnect, device number 2
+Feb 12 18:14:19 lapbox kernel: usb 9-2.2: USB disconnect, device number 3
+Feb 12 18:14:19 lapbox kernel: xhci_hcd 0000:0d:00.0: Host halt failed, -19
+Feb 12 18:14:19 lapbox kernel: xhci_hcd 0000:0d:00.0: Host not accessible, reset failed.
+Feb 12 18:14:19 lapbox kernel: xhci_hcd 0000:0d:00.0: USB bus 9 deregistered
+Feb 12 18:14:19 lapbox kernel: igb 0000:0c:00.0: removed PHC on enp12s0
+Feb 12 18:14:19 lapbox kernel: igb 0000:0c:00.0 enp12s0: PCIe link lost
+Feb 12 18:14:19 lapbox kernel: xhci_hcd 0000:0b:00.0: remove, state 4
+Feb 12 18:14:19 lapbox kernel: usb usb8: USB disconnect, device number 1
+Feb 12 18:14:19 lapbox kernel: xhci_hcd 0000:0b:00.0: USB bus 8 deregistered
+Feb 12 18:14:19 lapbox kernel: xhci_hcd 0000:0b:00.0: xHCI host controller not responding, assume dead
+Feb 12 18:14:19 lapbox kernel: xhci_hcd 0000:0b:00.0: remove, state 4
+Feb 12 18:14:19 lapbox kernel: usb usb7: USB disconnect, device number 1
+Feb 12 18:14:19 lapbox kernel: xhci_hcd 0000:0b:00.0: Host halt failed, -19
+Feb 12 18:14:19 lapbox kernel: xhci_hcd 0000:0b:00.0: Host not accessible, reset failed.
+Feb 12 18:14:19 lapbox kernel: xhci_hcd 0000:0b:00.0: USB bus 7 deregistered
+Feb 12 18:14:19 lapbox kernel: xhci_hcd 0000:0a:00.0: remove, state 1
+Feb 12 18:14:19 lapbox kernel: usb usb6: USB disconnect, device number 1
+Feb 12 18:14:19 lapbox kernel: usb 6-4: USB disconnect, device number 2
+Feb 12 18:14:20 lapbox kernel: xhci_hcd 0000:0a:00.0: USB bus 6 deregistered
+Feb 12 18:14:20 lapbox kernel: xhci_hcd 0000:0a:00.0: xHCI host controller not responding, assume dead
+Feb 12 18:14:20 lapbox kernel: xhci_hcd 0000:0a:00.0: remove, state 1
+Feb 12 18:14:20 lapbox kernel: usb usb5: USB disconnect, device number 1
+Feb 12 18:14:20 lapbox kernel: usb 5-1: USB disconnect, device number 2
+Feb 12 18:14:20 lapbox kernel: usb 5-3: USB disconnect, device number 3
+Feb 12 18:14:20 lapbox kernel: thunderbolt 0-1: device disconnected
+Feb 12 18:14:20 lapbox kernel: xhci_hcd 0000:0a:00.0: Host halt failed, -19
+Feb 12 18:14:20 lapbox kernel: xhci_hcd 0000:0a:00.0: Host not accessible, reset failed.
+Feb 12 18:14:20 lapbox kernel: xhci_hcd 0000:0a:00.0: USB bus 5 deregistered
+Feb 12 18:14:20 lapbox kernel: xhci_hcd 0000:09:00.0: remove, state 4
+Feb 12 18:14:20 lapbox kernel: usb usb4: USB disconnect, device number 1
+Feb 12 18:14:20 lapbox kernel: xhci_hcd 0000:09:00.0: USB bus 4 deregistered
+Feb 12 18:14:20 lapbox kernel: xhci_hcd 0000:09:00.0: xHCI host controller not responding, assume dead
+Feb 12 18:14:20 lapbox kernel: xhci_hcd 0000:09:00.0: remove, state 1
+Feb 12 18:14:20 lapbox kernel: usb usb3: USB disconnect, device number 1
+Feb 12 18:14:20 lapbox kernel: usb 3-2: USB disconnect, device number 2
+Feb 12 18:14:20 lapbox pulseaudio[3470]: Got POLLNVAL from ALSA
+Feb 12 18:14:20 lapbox kernel: xhci_hcd 0000:09:00.0: Host halt failed, -19
+Feb 12 18:14:20 lapbox kernel: xhci_hcd 0000:09:00.0: Host not accessible, reset failed.
+Feb 12 18:14:20 lapbox kernel: xhci_hcd 0000:09:00.0: USB bus 3 deregistered
+Feb 12 18:14:20 lapbox kernel: pci_bus 0000:09: busn_res: [bus 09] is released
+Feb 12 18:14:20 lapbox kernel: pci_bus 0000:0a: busn_res: [bus 0a] is released
+Feb 12 18:14:20 lapbox kernel: pci_bus 0000:0b: busn_res: [bus 0b] is released
+Feb 12 18:14:20 lapbox kernel: pci_bus 0000:0c: busn_res: [bus 0c] is released
+Feb 12 18:14:20 lapbox kernel: pci_bus 0000:0d: busn_res: [bus 0d-2b] is released
+Feb 12 18:14:20 lapbox kernel: pci_bus 0000:08: busn_res: [bus 08-2b] is released
+Feb 12 18:14:20 lapbox kernel: pci_bus 0000:05: Allocating resources
+Feb 12 18:14:20 lapbox kernel: pcieport 0000:05:04.0: bridge window [io  0x1000-0x0fff] to [bus 2d-51] add_size 1000
+Feb 12 18:14:20 lapbox kernel: pcieport 0000:05:04.0: BAR 13: no space for [io  size 0x1000]
+Feb 12 18:14:20 lapbox kernel: pcieport 0000:05:04.0: BAR 13: failed to assign [io  size 0x1000]
+Feb 12 18:14:20 lapbox kernel: pcieport 0000:05:04.0: BAR 13: no space for [io  size 0x1000]
+Feb 12 18:14:20 lapbox kernel: pcieport 0000:05:04.0: BAR 13: failed to assign [io  size 0x1000]
+Feb 12 18:14:20 lapbox pulseaudio[3470]: Error opening PCM device front:0: No such file or directory
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0: [8086:15d3] type 01 class 0x060400
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0: enabling Extended Tags
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0: supports D1 D2
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0: PME# supported from D0 D1 D2 D3hot D3cold
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0: 8.000 Gb/s available PCIe bandwidth, limited by 2.5 GT/s PCIe x4 link at 0000:05:01.0 (capable of 31.504 Gb/s with 8.0 GT/s PCIe x4 link)
+Feb 12 18:14:25 lapbox kernel: pcieport 0000:05:01.0: ASPM: current common clock configuration is inconsistent, reconfiguring
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:00.0: [8086:15d3] type 01 class 0x060400
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:00.0: enabling Extended Tags
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:00.0: supports D1 D2
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:00.0: PME# supported from D0 D1 D2 D3hot D3cold
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:01.0: [8086:15d3] type 01 class 0x060400
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:01.0: enabling Extended Tags
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:01.0: supports D1 D2
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:01.0: PME# supported from D0 D1 D2 D3hot D3cold
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:02.0: [8086:15d3] type 01 class 0x060400
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:02.0: enabling Extended Tags
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:02.0: supports D1 D2
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:02.0: PME# supported from D0 D1 D2 D3hot D3cold
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:03.0: [8086:15d3] type 01 class 0x060400
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:03.0: enabling Extended Tags
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:03.0: supports D1 D2
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:03.0: PME# supported from D0 D1 D2 D3hot D3cold
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:04.0: [8086:15d3] type 01 class 0x060400
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:04.0: enabling Extended Tags
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:04.0: supports D1 D2
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:04.0: PME# supported from D0 D1 D2 D3hot D3cold
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0: PCI bridge to [bus 08-2b]
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0:   bridge window [mem 0xd4000000-0xdfffffff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0:   bridge window [mem 0x6000000000-0x601fffffff 64bit pref]
+Feb 12 18:14:25 lapbox kernel: pci 0000:09:00.0: [1b73:1100] type 00 class 0x0c0330
+Feb 12 18:14:25 lapbox kernel: pci 0000:09:00.0: reg 0x10: [mem 0xd4000000-0xd400ffff 64bit]
+Feb 12 18:14:25 lapbox kernel: pci 0000:09:00.0: reg 0x18: [mem 0xd4010000-0xd4010fff 64bit]
+Feb 12 18:14:25 lapbox kernel: pci 0000:09:00.0: reg 0x20: [mem 0xd4011000-0xd4011fff 64bit]
+Feb 12 18:14:25 lapbox kernel: pci 0000:09:00.0: supports D1
+Feb 12 18:14:25 lapbox kernel: pci 0000:09:00.0: PME# supported from D0 D1 D3hot D3cold
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:00.0: PCI bridge to [bus 09]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:00.0:   bridge window [io  0x0000-0x0fff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:00.0:   bridge window [mem 0xd4000000-0xd40fffff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:0a:00.0: [1b73:1100] type 00 class 0x0c0330
+Feb 12 18:14:25 lapbox kernel: pci 0000:0a:00.0: reg 0x10: [mem 0xd4100000-0xd410ffff 64bit]
+Feb 12 18:14:25 lapbox kernel: pci 0000:0a:00.0: reg 0x18: [mem 0xd4110000-0xd4110fff 64bit]
+Feb 12 18:14:25 lapbox kernel: pci 0000:0a:00.0: reg 0x20: [mem 0xd4111000-0xd4111fff 64bit]
+Feb 12 18:14:25 lapbox kernel: pci 0000:0a:00.0: supports D1
+Feb 12 18:14:25 lapbox kernel: pci 0000:0a:00.0: PME# supported from D0 D1 D3hot D3cold
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:01.0: PCI bridge to [bus 0a]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:01.0:   bridge window [io  0x0000-0x0fff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:01.0:   bridge window [mem 0xd4100000-0xd41fffff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:0b:00.0: [1b21:1242] type 00 class 0x0c0330
+Feb 12 18:14:25 lapbox kernel: pci 0000:0b:00.0: reg 0x10: [mem 0xd4200000-0xd4207fff 64bit]
+Feb 12 18:14:25 lapbox kernel: pci 0000:0b:00.0: enabling Extended Tags
+Feb 12 18:14:25 lapbox kernel: pci 0000:0b:00.0: PME# supported from D3hot D3cold
+Feb 12 18:14:25 lapbox kernel: pci 0000:0b:00.0: 7.876 Gb/s available PCIe bandwidth, limited by 8.0 GT/s PCIe x1 link at 0000:08:02.0 (capable of 15.752 Gb/s with 8.0 GT/s PCIe x2 link)
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:02.0: PCI bridge to [bus 0b]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:02.0:   bridge window [io  0x0000-0x0fff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:02.0:   bridge window [mem 0xd4200000-0xd42fffff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:0c:00.0: [8086:1533] type 00 class 0x020000
+Feb 12 18:14:25 lapbox kernel: pci 0000:0c:00.0: reg 0x10: [mem 0xd4300000-0xd437ffff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:0c:00.0: reg 0x18: [io  0x0000-0x001f]
+Feb 12 18:14:25 lapbox kernel: pci 0000:0c:00.0: reg 0x1c: [mem 0xd4380000-0xd4383fff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:0c:00.0: PME# supported from D0 D3hot D3cold
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:03.0: PCI bridge to [bus 0c]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:03.0:   bridge window [io  0x0000-0x0fff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:03.0:   bridge window [mem 0xd4300000-0xd43fffff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:0d:00.0: [8086:15d4] type 00 class 0x0c0330
+Feb 12 18:14:25 lapbox kernel: pci 0000:0d:00.0: reg 0x10: [mem 0xd4400000-0xd440ffff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:0d:00.0: enabling Extended Tags
+Feb 12 18:14:25 lapbox kernel: pci 0000:0d:00.0: supports D1 D2
+Feb 12 18:14:25 lapbox kernel: pci 0000:0d:00.0: PME# supported from D0 D1 D2 D3hot D3cold
+Feb 12 18:14:25 lapbox kernel: pci 0000:0d:00.0: 8.000 Gb/s available PCIe bandwidth, limited by 2.5 GT/s PCIe x4 link at 0000:05:01.0 (capable of 31.504 Gb/s with 8.0 GT/s PCIe x4 link)
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:04.0: PCI bridge to [bus 0d-2b]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:04.0:   bridge window [mem 0xd4400000-0xdfffffff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:04.0:   bridge window [mem 0x6000000000-0x601fffffff 64bit pref]
+Feb 12 18:14:25 lapbox kernel: pci_bus 0000:05: Allocating resources
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:04.0: bridge window [io  0x1000-0x0fff] to [bus 0d-2b] add_size 1000
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0: bridge window [io  0x1000-0x1fff] to [bus 08-2b] add_size 1000
+Feb 12 18:14:25 lapbox kernel: pcieport 0000:05:04.0: bridge window [io  0x1000-0x0fff] to [bus 2d-51] add_size 1000
+Feb 12 18:14:25 lapbox kernel: pcieport 0000:05:04.0: BAR 13: no space for [io  size 0x1000]
+Feb 12 18:14:25 lapbox kernel: pcieport 0000:05:04.0: BAR 13: failed to assign [io  size 0x1000]
+Feb 12 18:14:25 lapbox kernel: pcieport 0000:05:04.0: BAR 13: no space for [io  size 0x1000]
+Feb 12 18:14:25 lapbox kernel: pcieport 0000:05:04.0: BAR 13: failed to assign [io  size 0x1000]
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0: BAR 13: no space for [io  size 0x2000]
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0: BAR 13: failed to assign [io  size 0x2000]
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0: BAR 13: assigned [io  0x2000-0x2fff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0: BAR 13: [io  0x2000-0x2fff] (failed to expand by 0x1000)
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0: failed to add 1000 res[13]=[io  0x2000-0x2fff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:03.0: BAR 13: assigned [io  0x2000-0x2fff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:04.0: BAR 13: no space for [io  size 0x1000]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:04.0: BAR 13: failed to assign [io  size 0x1000]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:03.0: BAR 13: assigned [io  0x2000-0x2fff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:04.0: BAR 13: no space for [io  size 0x1000]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:04.0: BAR 13: failed to assign [io  size 0x1000]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:00.0: PCI bridge to [bus 09]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:00.0:   bridge window [mem 0xd4000000-0xd40fffff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:01.0: PCI bridge to [bus 0a]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:01.0:   bridge window [mem 0xd4100000-0xd41fffff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:02.0: PCI bridge to [bus 0b]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:02.0:   bridge window [mem 0xd4200000-0xd42fffff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:0c:00.0: BAR 2: assigned [io  0x2000-0x201f]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:03.0: PCI bridge to [bus 0c]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:03.0:   bridge window [io  0x2000-0x2fff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:03.0:   bridge window [mem 0xd4300000-0xd43fffff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:04.0: PCI bridge to [bus 0d-2b]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:04.0:   bridge window [mem 0xd4400000-0xdfffffff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:08:04.0:   bridge window [mem 0x6000000000-0x601fffffff 64bit pref]
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0: PCI bridge to [bus 08-2b]
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0:   bridge window [io  0x2000-0x2fff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0:   bridge window [mem 0xd4000000-0xdfffffff]
+Feb 12 18:14:25 lapbox kernel: pci 0000:07:00.0:   bridge window [mem 0x6000000000-0x601fffffff 64bit pref]
+Feb 12 18:14:25 lapbox kernel: pcieport 0000:07:00.0: enabling device (0006 -> 0007)
+Feb 12 18:14:25 lapbox kernel: pcieport 0000:08:03.0: enabling device (0006 -> 0007)
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:09:00.0: xHCI Host Controller
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:09:00.0: new USB bus registered, assigned bus number 3
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:09:00.0: hcc params 0x200071e9 hci version 0x100 quirks 0x0000000000000410
+Feb 12 18:14:25 lapbox kernel: usb usb3: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 5.16
+Feb 12 18:14:25 lapbox kernel: usb usb3: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+Feb 12 18:14:25 lapbox kernel: usb usb3: Product: xHCI Host Controller
+Feb 12 18:14:25 lapbox kernel: usb usb3: Manufacturer: Linux 5.16.8-arch1-1 xhci-hcd
+Feb 12 18:14:25 lapbox kernel: usb usb3: SerialNumber: 0000:09:00.0
+Feb 12 18:14:25 lapbox kernel: hub 3-0:1.0: USB hub found
+Feb 12 18:14:25 lapbox kernel: hub 3-0:1.0: 4 ports detected
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:09:00.0: xHCI Host Controller
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:09:00.0: new USB bus registered, assigned bus number 4
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:09:00.0: Host supports USB 3.0 SuperSpeed
+Feb 12 18:14:25 lapbox kernel: usb usb4: We don't know the algorithms for LPM for this host, disabling LPM.
+Feb 12 18:14:25 lapbox kernel: usb usb4: New USB device found, idVendor=1d6b, idProduct=0003, bcdDevice= 5.16
+Feb 12 18:14:25 lapbox kernel: usb usb4: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+Feb 12 18:14:25 lapbox kernel: usb usb4: Product: xHCI Host Controller
+Feb 12 18:14:25 lapbox kernel: usb usb4: Manufacturer: Linux 5.16.8-arch1-1 xhci-hcd
+Feb 12 18:14:25 lapbox kernel: usb usb4: SerialNumber: 0000:09:00.0
+Feb 12 18:14:25 lapbox kernel: hub 4-0:1.0: USB hub found
+Feb 12 18:14:25 lapbox kernel: hub 4-0:1.0: 4 ports detected
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0a:00.0: xHCI Host Controller
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0a:00.0: new USB bus registered, assigned bus number 5
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0a:00.0: hcc params 0x200071e9 hci version 0x100 quirks 0x0000000000000410
+Feb 12 18:14:25 lapbox kernel: usb usb5: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 5.16
+Feb 12 18:14:25 lapbox kernel: usb usb5: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+Feb 12 18:14:25 lapbox kernel: usb usb5: Product: xHCI Host Controller
+Feb 12 18:14:25 lapbox kernel: usb usb5: Manufacturer: Linux 5.16.8-arch1-1 xhci-hcd
+Feb 12 18:14:25 lapbox kernel: usb usb5: SerialNumber: 0000:0a:00.0
+Feb 12 18:14:25 lapbox kernel: hub 5-0:1.0: USB hub found
+Feb 12 18:14:25 lapbox kernel: hub 5-0:1.0: 4 ports detected
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0a:00.0: xHCI Host Controller
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0a:00.0: new USB bus registered, assigned bus number 6
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0a:00.0: Host supports USB 3.0 SuperSpeed
+Feb 12 18:14:25 lapbox kernel: usb usb6: We don't know the algorithms for LPM for this host, disabling LPM.
+Feb 12 18:14:25 lapbox kernel: usb usb6: New USB device found, idVendor=1d6b, idProduct=0003, bcdDevice= 5.16
+Feb 12 18:14:25 lapbox kernel: usb usb6: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+Feb 12 18:14:25 lapbox kernel: usb usb6: Product: xHCI Host Controller
+Feb 12 18:14:25 lapbox kernel: usb usb6: Manufacturer: Linux 5.16.8-arch1-1 xhci-hcd
+Feb 12 18:14:25 lapbox kernel: usb usb6: SerialNumber: 0000:0a:00.0
+Feb 12 18:14:25 lapbox kernel: hub 6-0:1.0: USB hub found
+Feb 12 18:14:25 lapbox kernel: hub 6-0:1.0: 4 ports detected
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0b:00.0: xHCI Host Controller
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0b:00.0: new USB bus registered, assigned bus number 7
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0b:00.0: hcc params 0x0200eec0 hci version 0x110 quirks 0x0000000000800010
+Feb 12 18:14:25 lapbox kernel: usb usb7: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 5.16
+Feb 12 18:14:25 lapbox kernel: usb usb7: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+Feb 12 18:14:25 lapbox kernel: usb usb7: Product: xHCI Host Controller
+Feb 12 18:14:25 lapbox kernel: usb usb7: Manufacturer: Linux 5.16.8-arch1-1 xhci-hcd
+Feb 12 18:14:25 lapbox kernel: usb usb7: SerialNumber: 0000:0b:00.0
+Feb 12 18:14:25 lapbox kernel: hub 7-0:1.0: USB hub found
+Feb 12 18:14:25 lapbox kernel: hub 7-0:1.0: 2 ports detected
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0b:00.0: xHCI Host Controller
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0b:00.0: new USB bus registered, assigned bus number 8
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0b:00.0: Host supports USB 3.1 Enhanced SuperSpeed
+Feb 12 18:14:25 lapbox kernel: usb usb8: We don't know the algorithms for LPM for this host, disabling LPM.
+Feb 12 18:14:25 lapbox kernel: usb usb8: New USB device found, idVendor=1d6b, idProduct=0003, bcdDevice= 5.16
+Feb 12 18:14:25 lapbox kernel: usb usb8: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+Feb 12 18:14:25 lapbox kernel: usb usb8: Product: xHCI Host Controller
+Feb 12 18:14:25 lapbox kernel: usb usb8: Manufacturer: Linux 5.16.8-arch1-1 xhci-hcd
+Feb 12 18:14:25 lapbox kernel: usb usb8: SerialNumber: 0000:0b:00.0
+Feb 12 18:14:25 lapbox kernel: hub 8-0:1.0: USB hub found
+Feb 12 18:14:25 lapbox kernel: hub 8-0:1.0: 2 ports detected
+Feb 12 18:14:25 lapbox kernel: pps pps0: new PPS source ptp0
+Feb 12 18:14:25 lapbox kernel: igb 0000:0c:00.0: added PHC on eth0
+Feb 12 18:14:25 lapbox kernel: igb 0000:0c:00.0: Intel(R) Gigabit Ethernet Network Connection
+Feb 12 18:14:25 lapbox kernel: igb 0000:0c:00.0: eth0: (PCIe:2.5Gb/s:Width x1) 64:4b:f0:13:fb:1a
+Feb 12 18:14:25 lapbox kernel: igb 0000:0c:00.0: eth0: PBA No: 000300-000
+Feb 12 18:14:25 lapbox kernel: igb 0000:0c:00.0: Using MSI-X interrupts. 4 rx queue(s), 4 tx queue(s)
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0d:00.0: xHCI Host Controller
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0d:00.0: new USB bus registered, assigned bus number 9
+Feb 12 18:14:25 lapbox systemd-udevd[4946]: Using default interface naming scheme 'v250'.
+Feb 12 18:14:25 lapbox kernel: igb 0000:0c:00.0 enp12s0: renamed from eth0
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0d:00.0: hcc params 0x200077c1 hci version 0x110 quirks 0x0000000200009810
+Feb 12 18:14:25 lapbox kernel: usb usb9: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 5.16
+Feb 12 18:14:25 lapbox kernel: usb usb9: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+Feb 12 18:14:25 lapbox kernel: usb usb9: Product: xHCI Host Controller
+Feb 12 18:14:25 lapbox kernel: usb usb9: Manufacturer: Linux 5.16.8-arch1-1 xhci-hcd
+Feb 12 18:14:25 lapbox kernel: usb usb9: SerialNumber: 0000:0d:00.0
+Feb 12 18:14:25 lapbox kernel: hub 9-0:1.0: USB hub found
+Feb 12 18:14:25 lapbox kernel: hub 9-0:1.0: 2 ports detected
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0d:00.0: xHCI Host Controller
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0d:00.0: new USB bus registered, assigned bus number 10
+Feb 12 18:14:25 lapbox kernel: xhci_hcd 0000:0d:00.0: Host supports USB 3.1 Enhanced SuperSpeed
+Feb 12 18:14:25 lapbox kernel: usb usb10: New USB device found, idVendor=1d6b, idProduct=0003, bcdDevice= 5.16
+Feb 12 18:14:25 lapbox kernel: usb usb10: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+Feb 12 18:14:25 lapbox kernel: usb usb10: Product: xHCI Host Controller
+Feb 12 18:14:25 lapbox kernel: usb usb10: Manufacturer: Linux 5.16.8-arch1-1 xhci-hcd
+Feb 12 18:14:25 lapbox kernel: usb usb10: SerialNumber: 0000:0d:00.0
+Feb 12 18:14:25 lapbox kernel: hub 10-0:1.0: USB hub found
+Feb 12 18:14:25 lapbox kernel: hub 10-0:1.0: 2 ports detected
+Feb 12 18:14:26 lapbox kernel: usb 3-2: new full-speed USB device number 2 using xhci_hcd
+Feb 12 18:14:26 lapbox kernel: usb 5-1: new high-speed USB device number 2 using xhci_hcd
+Feb 12 18:14:26 lapbox kernel: thunderbolt 0-1: new device found, vendor=0x3d device=0x11
+Feb 12 18:14:26 lapbox kernel: thunderbolt 0-1: CalDigit, Inc. TS3 Plus
+Feb 12 18:14:26 lapbox kernel: usb 9-2: new high-speed USB device number 2 using xhci_hcd
+Feb 12 18:14:26 lapbox kernel: usb 3-2: New USB device found, idVendor=2188, idProduct=6533, bcdDevice= 1.01
+Feb 12 18:14:26 lapbox kernel: usb 3-2: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+Feb 12 18:14:26 lapbox kernel: usb 3-2: Product: CalDigit Thunderbolt 3 Audio
+Feb 12 18:14:26 lapbox kernel: usb 3-2: Manufacturer: CalDigit, Inc.
+Feb 12 18:14:26 lapbox kernel: input: CalDigit, Inc. CalDigit Thunderbolt 3 Audio as /devices/pci0000:00/0000:00:1b.4/0000:04:00.0/0000:05:01.0/0000:07:00.0/0000:08:00.0/0000:09:00.0/usb3/3-2/3-2:1.3/0003:2188:6533.0009/input/input43
+Feb 12 18:14:26 lapbox kernel: usb 9-2: New USB device found, idVendor=05ac, idProduct=1017, bcdDevice=40.09
+Feb 12 18:14:26 lapbox kernel: usb 9-2: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+Feb 12 18:14:26 lapbox kernel: usb 9-2: Product: USB2.0 Hub
+Feb 12 18:14:26 lapbox kernel: usb 9-2: Manufacturer: Apple Inc.
+Feb 12 18:14:26 lapbox kernel: usb 9-2: SerialNumber: DLC9275021AKD5668
+Feb 12 18:14:26 lapbox kernel: hub 9-2:1.0: USB hub found
+Feb 12 18:14:26 lapbox kernel: hub 9-2:1.0: 2 ports detected
+Feb 12 18:14:26 lapbox kernel: hid-generic 0003:2188:6533.0009: input,hidraw0: USB HID v1.11 Device [CalDigit, Inc. CalDigit Thunderbolt 3 Audio] on usb-0000:09:00.0-2/input3
+Feb 12 18:14:26 lapbox kernel: usb 6-4: new SuperSpeed USB device number 2 using xhci_hcd
+Feb 12 18:14:26 lapbox mtp-probe[4999]: checking bus 3, device 2: "/sys/devices/pci0000:00/0000:00:1b.4/0000:04:00.0/0000:05:01.0/0000:07:00.0/0000:08:00.0/0000:09:00.0/usb3/3-2"
+Feb 12 18:14:26 lapbox mtp-probe[4999]: bus: 3, device: 2 was not an MTP device
+Feb 12 18:14:26 lapbox kernel: usb 6-4: New USB device found, idVendor=2188, idProduct=0747, bcdDevice=10.38
+Feb 12 18:14:26 lapbox kernel: usb 6-4: New USB device strings: Mfr=3, Product=4, SerialNumber=5
+Feb 12 18:14:26 lapbox kernel: usb 6-4: Product: Card Reader
+Feb 12 18:14:26 lapbox kernel: usb 6-4: Manufacturer: CalDigit
+Feb 12 18:14:26 lapbox kernel: usb 6-4: SerialNumber: 000000000010
+Feb 12 18:14:26 lapbox kernel: usb-storage 6-4:1.0: USB Mass Storage device detected
+Feb 12 18:14:26 lapbox kernel: scsi host0: usb-storage 6-4:1.0
+Feb 12 18:14:26 lapbox mtp-probe[5007]: checking bus 6, device 2: "/sys/devices/pci0000:00/0000:00:1b.4/0000:04:00.0/0000:05:01.0/0000:07:00.0/0000:08:01.0/0000:0a:00.0/usb6/6-4"
+Feb 12 18:14:26 lapbox mtp-probe[5007]: bus: 6, device: 2 was not an MTP device
+Feb 12 18:14:26 lapbox mtp-probe[5020]: checking bus 6, device 2: "/sys/devices/pci0000:00/0000:00:1b.4/0000:04:00.0/0000:05:01.0/0000:07:00.0/0000:08:01.0/0000:0a:00.0/usb6/6-4"
+Feb 12 18:14:26 lapbox mtp-probe[5020]: bus: 6, device: 2 was not an MTP device
+Feb 12 18:14:26 lapbox kernel: usb 10-2: new SuperSpeed USB device number 2 using xhci_hcd
+Feb 12 18:14:26 lapbox kernel: usb 10-2: New USB device found, idVendor=05ac, idProduct=1018, bcdDevice=40.09
+Feb 12 18:14:26 lapbox kernel: usb 10-2: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+Feb 12 18:14:26 lapbox kernel: usb 10-2: Product: USB3.1 Hub
+Feb 12 18:14:26 lapbox kernel: usb 10-2: Manufacturer: Apple Inc.
+Feb 12 18:14:26 lapbox kernel: usb 10-2: SerialNumber: DLC9275021AKD5668
+Feb 12 18:14:26 lapbox kernel: hub 10-2:1.0: USB hub found
+Feb 12 18:14:26 lapbox kernel: hub 10-2:1.0: 1 port detected
+Feb 12 18:14:26 lapbox mtp-probe[5031]: checking bus 3, device 2: "/sys/devices/pci0000:00/0000:00:1b.4/0000:04:00.0/0000:05:01.0/0000:07:00.0/0000:08:00.0/0000:09:00.0/usb3/3-2"
+Feb 12 18:14:26 lapbox mtp-probe[5031]: bus: 3, device: 2 was not an MTP device
+Feb 12 18:14:26 lapbox rtkit-daemon[1578]: Supervising 6 threads of 3 processes of 1 users.
+Feb 12 18:14:26 lapbox rtkit-daemon[1578]: Successfully made thread 5035 of process 3470 owned by '1000' RT at priority 5.
+Feb 12 18:14:26 lapbox rtkit-daemon[1578]: Supervising 7 threads of 3 processes of 1 users.
+Feb 12 18:14:26 lapbox rtkit-daemon[1578]: Supervising 7 threads of 3 processes of 1 users.
+Feb 12 18:14:26 lapbox rtkit-daemon[1578]: Successfully made thread 5036 of process 3470 owned by '1000' RT at priority 5.
+Feb 12 18:14:26 lapbox rtkit-daemon[1578]: Supervising 8 threads of 3 processes of 1 users.
+Feb 12 18:14:26 lapbox kernel: usb 9-2.2: new full-speed USB device number 3 using xhci_hcd
+Feb 12 18:14:26 lapbox kernel: usb 9-2.2: New USB device found, idVendor=05ac, idProduct=1463, bcdDevice=40.09
+Feb 12 18:14:26 lapbox kernel: usb 9-2.2: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+Feb 12 18:14:26 lapbox kernel: usb 9-2.2: Product: USB-C Digital AV Multiport Adapter
+Feb 12 18:14:26 lapbox kernel: usb 9-2.2: Manufacturer: Apple Inc
+Feb 12 18:14:26 lapbox kernel: usb 9-2.2: SerialNumber: DLC9275021AKD5668
+Feb 12 18:14:26 lapbox mtp-probe[5037]: checking bus 9, device 3: "/sys/devices/pci0000:00/0000:00:1b.4/0000:04:00.0/0000:05:01.0/0000:07:00.0/0000:08:04.0/0000:0d:00.0/usb9/9-2/9-2.2"
+Feb 12 18:14:26 lapbox mtp-probe[5037]: bus: 9, device: 3 was not an MTP device
+Feb 12 18:14:26 lapbox mtp-probe[5040]: checking bus 9, device 3: "/sys/devices/pci0000:00/0000:00:1b.4/0000:04:00.0/0000:05:01.0/0000:07:00.0/0000:08:04.0/0000:0d:00.0/usb9/9-2/9-2.2"
+Feb 12 18:14:26 lapbox mtp-probe[5040]: bus: 9, device: 3 was not an MTP device
+Feb 12 18:14:27 lapbox kernel: scsi 0:0:0:0: Direct-Access     CalDigit Card Reader      1038 PQ: 0 ANSI: 6
+Feb 12 18:14:27 lapbox kernel: sd 0:0:0:0: [sda] Media removed, stopped polling
+Feb 12 18:14:27 lapbox kernel: sd 0:0:0:0: [sda] Attached SCSI removable disk
+Feb 12 18:14:28 lapbox kernel: usb 5-1: New USB device found, idVendor=046d, idProduct=085c, bcdDevice= 0.16
+Feb 12 18:14:28 lapbox kernel: usb 5-1: New USB device strings: Mfr=0, Product=2, SerialNumber=1
+Feb 12 18:14:28 lapbox kernel: usb 5-1: Product: C922 Pro Stream Webcam
+Feb 12 18:14:28 lapbox kernel: usb 5-1: SerialNumber: 02AD91BF
+Feb 12 18:14:28 lapbox kernel: usb 5-1: Found UVC 1.00 device C922 Pro Stream Webcam (046d:085c)
+Feb 12 18:14:28 lapbox kernel: input: C922 Pro Stream Webcam as /devices/pci0000:00/0000:00:1b.4/0000:04:00.0/0000:05:01.0/0000:07:00.0/0000:08:01.0/0000:0a:00.0/usb5/5-1/5-1:1.0/input/input44
+Feb 12 18:14:28 lapbox mtp-probe[5043]: checking bus 5, device 2: "/sys/devices/pci0000:00/0000:00:1b.4/0000:04:00.0/0000:05:01.0/0000:07:00.0/0000:08:01.0/0000:0a:00.0/usb5/5-1"
+Feb 12 18:14:28 lapbox mtp-probe[5043]: bus: 5, device: 2 was not an MTP device
+Feb 12 18:14:28 lapbox kernel: usb 5-3: new full-speed USB device number 3 using xhci_hcd
+Feb 12 18:14:28 lapbox kernel: usb 5-3: New USB device found, idVendor=0853, idProduct=0111, bcdDevice= 0.01
+Feb 12 18:14:28 lapbox kernel: usb 5-3: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+Feb 12 18:14:28 lapbox kernel: usb 5-3: Product: Realforce 87
+Feb 12 18:14:28 lapbox kernel: usb 5-3: Manufacturer: Topre Corporation
+Feb 12 18:14:28 lapbox kernel: input: Topre Corporation Realforce 87 as /devices/pci0000:00/0000:00:1b.4/0000:04:00.0/0000:05:01.0/0000:07:00.0/0000:08:01.0/0000:0a:00.0/usb5/5-3/5-3:1.0/0003:0853:0111.000A/input/input45
+Feb 12 18:14:28 lapbox kernel: hid-generic 0003:0853:0111.000A: input,hidraw2: USB HID v1.11 Keyboard [Topre Corporation Realforce 87] on usb-0000:0a:00.0-3/input0
+Feb 12 18:14:28 lapbox mtp-probe[5045]: checking bus 5, device 3: "/sys/devices/pci0000:00/0000:00:1b.4/0000:04:00.0/0000:05:01.0/0000:07:00.0/0000:08:01.0/0000:0a:00.0/usb5/5-3"
+Feb 12 18:14:28 lapbox mtp-probe[5045]: bus: 5, device: 3 was not an MTP device
+Feb 12 18:14:29 lapbox systemd-logind[617]: Watching system buttons on /dev/input/event19 (Topre Corporation Realforce 87)
+Feb 12 18:14:29 lapbox mtp-probe[5065]: checking bus 5, device 2: "/sys/devices/pci0000:00/0000:00:1b.4/0000:04:00.0/0000:05:01.0/0000:07:00.0/0000:08:01.0/0000:0a:00.0/usb5/5-1"
+Feb 12 18:14:29 lapbox mtp-probe[5065]: bus: 5, device: 2 was not an MTP device
+Feb 12 18:14:29 lapbox mtp-probe[5066]: checking bus 5, device 3: "/sys/devices/pci0000:00/0000:00:1b.4/0000:04:00.0/0000:05:01.0/0000:07:00.0/0000:08:01.0/0000:0a:00.0/usb5/5-3"
+Feb 12 18:14:29 lapbox mtp-probe[5066]: bus: 5, device: 3 was not an MTP device
+Feb 12 18:14:29 lapbox rtkit-daemon[1578]: Supervising 8 threads of 3 processes of 1 users.
+Feb 12 18:14:29 lapbox rtkit-daemon[1578]: Successfully made thread 5069 of process 3470 owned by '1000' RT at priority 5.
+Feb 12 18:14:29 lapbox rtkit-daemon[1578]: Supervising 9 threads of 3 processes of 1 users.
+
+
+Logs from dmesg when it happens:
+
+[53411.792292] xhci_hcd 0000:0d:00.0: remove, state 4
+[53411.792314] usb usb10: USB disconnect, device number 1
+[53411.792323] usb 10-2: USB disconnect, device number 2
+[53411.793727] xhci_hcd 0000:0d:00.0: USB bus 10 deregistered
+[53411.793758] xhci_hcd 0000:0d:00.0: xHCI host controller not responding, assume dead
+[53411.793784] xhci_hcd 0000:0d:00.0: remove, state 1
+[53411.793795] usb usb9: USB disconnect, device number 1
+[53411.793802] usb 9-2: USB disconnect, device number 2
+[53411.793809] usb 9-2.2: USB disconnect, device number 3
+[53411.796099] xhci_hcd 0000:0d:00.0: Host halt failed, -19
+[53411.796119] xhci_hcd 0000:0d:00.0: Host not accessible, reset failed.
+[53411.796403] xhci_hcd 0000:0d:00.0: USB bus 9 deregistered
+[53411.798509] igb 0000:0c:00.0: removed PHC on enp12s0
+[53411.798532] igb 0000:0c:00.0 enp12s0: PCIe link lost
+[53411.936441] xhci_hcd 0000:0b:00.0: remove, state 4
+[53411.936464] usb usb8: USB disconnect, device number 1
+[53411.936729] xhci_hcd 0000:0b:00.0: USB bus 8 deregistered
+[53411.936743] xhci_hcd 0000:0b:00.0: xHCI host controller not responding, assume dead
+[53411.936748] xhci_hcd 0000:0b:00.0: remove, state 4
+[53411.936751] usb usb7: USB disconnect, device number 1
+[53411.937022] xhci_hcd 0000:0b:00.0: Host halt failed, -19
+[53411.937027] xhci_hcd 0000:0b:00.0: Host not accessible, reset failed.
+[53411.937348] xhci_hcd 0000:0b:00.0: USB bus 7 deregistered
+[53411.937810] xhci_hcd 0000:0a:00.0: remove, state 1
+[53411.937815] usb usb6: USB disconnect, device number 1
+[53411.937817] usb 6-4: USB disconnect, device number 2
+[53412.002454] xhci_hcd 0000:0a:00.0: USB bus 6 deregistered
+[53412.002469] xhci_hcd 0000:0a:00.0: xHCI host controller not responding, assume dead
+[53412.002477] xhci_hcd 0000:0a:00.0: remove, state 1
+[53412.002480] usb usb5: USB disconnect, device number 1
+[53412.002481] usb 5-1: USB disconnect, device number 2
+[53412.072618] usb 5-3: USB disconnect, device number 3
+[53412.204710] thunderbolt 0-1: device disconnected
+[53412.305878] xhci_hcd 0000:0a:00.0: Host halt failed, -19
+[53412.305889] xhci_hcd 0000:0a:00.0: Host not accessible, reset failed.
+[53412.306072] xhci_hcd 0000:0a:00.0: USB bus 5 deregistered
+[53412.306327] xhci_hcd 0000:09:00.0: remove, state 4
+[53412.306331] usb usb4: USB disconnect, device number 1
+[53412.306499] xhci_hcd 0000:09:00.0: USB bus 4 deregistered
+[53412.306511] xhci_hcd 0000:09:00.0: xHCI host controller not responding, assume dead
+[53412.306521] xhci_hcd 0000:09:00.0: remove, state 1
+[53412.306523] usb usb3: USB disconnect, device number 1
+[53412.306525] usb 3-2: USB disconnect, device number 2
+[53412.355867] xhci_hcd 0000:09:00.0: Host halt failed, -19
+[53412.355874] xhci_hcd 0000:09:00.0: Host not accessible, reset failed.
+[53412.356184] xhci_hcd 0000:09:00.0: USB bus 3 deregistered
+[53412.356475] pcieport 0000:08:00.0: can't change power state from D0 to D3hot (config space inaccessible)
+[53412.356497] pcieport 0000:08:00.0: can't change power state from D3cold to D0 (config space inaccessible)
+[53412.357137] pci_bus 0000:09: busn_res: [bus 09] is released
+[53412.357573] pci_bus 0000:0a: busn_res: [bus 0a] is released
+[53412.357781] pci_bus 0000:0b: busn_res: [bus 0b] is released
+[53412.358174] pci_bus 0000:0c: busn_res: [bus 0c] is released
+[53412.358575] pci_bus 0000:0d: busn_res: [bus 0d-2b] is released
+[53412.358742] pci_bus 0000:08: busn_res: [bus 08-2b] is released
+[53412.375073] pci_bus 0000:05: Allocating resources
+[53412.375123] pcieport 0000:05:04.0: bridge window [io  0x1000-0x0fff] to [bus 2d-51] add_size 1000
+[53412.375137] pcieport 0000:05:04.0: BAR 13: no space for [io  size 0x1000]
+[53412.375141] pcieport 0000:05:04.0: BAR 13: failed to assign [io  size 0x1000]
+[53412.375144] pcieport 0000:05:04.0: BAR 13: no space for [io  size 0x1000]
+[53412.375146] pcieport 0000:05:04.0: BAR 13: failed to assign [io  size 0x1000]
+[53417.631687] pci_bus 0000:05: Allocating resources
+[53417.631736] pcieport 0000:05:04.0: bridge window [io  0x1000-0x0fff] to [bus 2d-51] add_size 1000
+[53417.631741] pcieport 0000:05:04.0: BAR 13: no space for [io  size 0x1000]
+[53417.631743] pcieport 0000:05:04.0: BAR 13: failed to assign [io  size 0x1000]
+[53417.631757] pcieport 0000:05:04.0: BAR 13: no space for [io  size 0x1000]
+[53417.631758] pcieport 0000:05:04.0: BAR 13: failed to assign [io  size 0x1000]
+[53418.003659] thunderbolt 0-1: new device found, vendor=0x3d device=0x11
+[53418.003664] thunderbolt 0-1: CalDigit, Inc. TS3 Plus
+[53423.358447] pci 0000:07:00.0: [8086:15d3] type 01 class 0x060400
+[53423.358549] pci 0000:07:00.0: enabling Extended Tags
+[53423.358737] pci 0000:07:00.0: supports D1 D2
+[53423.358738] pci 0000:07:00.0: PME# supported from D0 D1 D2 D3hot D3cold
+[53423.359062] pci 0000:07:00.0: 8.000 Gb/s available PCIe bandwidth, limited by 2.5 GT/s PCIe x4 link at 0000:05:01.0 (capable of 31.504 Gb/s with 8.0 GT/s PCIe x4 link)
+[53423.359193] pcieport 0000:05:01.0: ASPM: current common clock configuration is inconsistent, reconfiguring
+[53423.368221] pci 0000:08:00.0: [8086:15d3] type 01 class 0x060400
+[53423.368368] pci 0000:08:00.0: enabling Extended Tags
+[53423.368557] pci 0000:08:00.0: supports D1 D2
+[53423.368558] pci 0000:08:00.0: PME# supported from D0 D1 D2 D3hot D3cold
+[53423.368886] pci 0000:08:01.0: [8086:15d3] type 01 class 0x060400
+[53423.369096] pci 0000:08:01.0: enabling Extended Tags
+[53423.369341] pci 0000:08:01.0: supports D1 D2
+[53423.369342] pci 0000:08:01.0: PME# supported from D0 D1 D2 D3hot D3cold
+[53423.369584] pci 0000:08:02.0: [8086:15d3] type 01 class 0x060400
+[53423.369797] pci 0000:08:02.0: enabling Extended Tags
+[53423.370047] pci 0000:08:02.0: supports D1 D2
+[53423.370048] pci 0000:08:02.0: PME# supported from D0 D1 D2 D3hot D3cold
+[53423.370299] pci 0000:08:03.0: [8086:15d3] type 01 class 0x060400
+[53423.370448] pci 0000:08:03.0: enabling Extended Tags
+[53423.370641] pci 0000:08:03.0: supports D1 D2
+[53423.370642] pci 0000:08:03.0: PME# supported from D0 D1 D2 D3hot D3cold
+[53423.370884] pci 0000:08:04.0: [8086:15d3] type 01 class 0x060400
+[53423.371010] pci 0000:08:04.0: enabling Extended Tags
+[53423.371245] pci 0000:08:04.0: supports D1 D2
+[53423.371246] pci 0000:08:04.0: PME# supported from D0 D1 D2 D3hot D3cold
+[53423.371847] pci 0000:07:00.0: PCI bridge to [bus 08-2b]
+[53423.371864] pci 0000:07:00.0:   bridge window [mem 0xd4000000-0xdfffffff]
+[53423.371875] pci 0000:07:00.0:   bridge window [mem 0x6000000000-0x601fffffff 64bit pref]
+[53423.372014] pci 0000:09:00.0: [1b73:1100] type 00 class 0x0c0330
+[53423.372099] pci 0000:09:00.0: reg 0x10: [mem 0xd4000000-0xd400ffff 64bit]
+[53423.372137] pci 0000:09:00.0: reg 0x18: [mem 0xd4010000-0xd4010fff 64bit]
+[53423.372175] pci 0000:09:00.0: reg 0x20: [mem 0xd4011000-0xd4011fff 64bit]
+[53423.372367] pci 0000:09:00.0: supports D1
+[53423.372368] pci 0000:09:00.0: PME# supported from D0 D1 D3hot D3cold
+[53423.384852] pci 0000:08:00.0: PCI bridge to [bus 09]
+[53423.384876] pci 0000:08:00.0:   bridge window [io  0x0000-0x0fff]
+[53423.384882] pci 0000:08:00.0:   bridge window [mem 0xd4000000-0xd40fffff]
+[53423.385096] pci 0000:0a:00.0: [1b73:1100] type 00 class 0x0c0330
+[53423.385153] pci 0000:0a:00.0: reg 0x10: [mem 0xd4100000-0xd410ffff 64bit]
+[53423.385189] pci 0000:0a:00.0: reg 0x18: [mem 0xd4110000-0xd4110fff 64bit]
+[53423.385226] pci 0000:0a:00.0: reg 0x20: [mem 0xd4111000-0xd4111fff 64bit]
+[53423.385526] pci 0000:0a:00.0: supports D1
+[53423.385528] pci 0000:0a:00.0: PME# supported from D0 D1 D3hot D3cold
+[53423.394777] pci 0000:08:01.0: PCI bridge to [bus 0a]
+[53423.394792] pci 0000:08:01.0:   bridge window [io  0x0000-0x0fff]
+[53423.394814] pci 0000:08:01.0:   bridge window [mem 0xd4100000-0xd41fffff]
+[53423.395046] pci 0000:0b:00.0: [1b21:1242] type 00 class 0x0c0330
+[53423.395125] pci 0000:0b:00.0: reg 0x10: [mem 0xd4200000-0xd4207fff 64bit]
+[53423.395331] pci 0000:0b:00.0: enabling Extended Tags
+[53423.395600] pci 0000:0b:00.0: PME# supported from D3hot D3cold
+[53423.395811] pci 0000:0b:00.0: 7.876 Gb/s available PCIe bandwidth, limited by 8.0 GT/s PCIe x1 link at 0000:08:02.0 (capable of 15.752 Gb/s with 8.0 GT/s PCIe x2 link)
+[53423.395952] pci 0000:08:02.0: PCI bridge to [bus 0b]
+[53423.395964] pci 0000:08:02.0:   bridge window [io  0x0000-0x0fff]
+[53423.395969] pci 0000:08:02.0:   bridge window [mem 0xd4200000-0xd42fffff]
+[53423.396188] pci 0000:0c:00.0: [8086:1533] type 00 class 0x020000
+[53423.396281] pci 0000:0c:00.0: reg 0x10: [mem 0xd4300000-0xd437ffff]
+[53423.396344] pci 0000:0c:00.0: reg 0x18: [io  0x0000-0x001f]
+[53423.396373] pci 0000:0c:00.0: reg 0x1c: [mem 0xd4380000-0xd4383fff]
+[53423.396722] pci 0000:0c:00.0: PME# supported from D0 D3hot D3cold
+[53423.404799] pci 0000:08:03.0: PCI bridge to [bus 0c]
+[53423.404841] pci 0000:08:03.0:   bridge window [io  0x0000-0x0fff]
+[53423.404848] pci 0000:08:03.0:   bridge window [mem 0xd4300000-0xd43fffff]
+[53423.405075] pci 0000:0d:00.0: [8086:15d4] type 00 class 0x0c0330
+[53423.405117] pci 0000:0d:00.0: reg 0x10: [mem 0xd4400000-0xd440ffff]
+[53423.405562] pci 0000:0d:00.0: supports D1 D2
+[53423.405563] pci 0000:0d:00.0: PME# supported from D0 D1 D2 D3hot D3cold
+[53423.405740] pci 0000:0d:00.0: 8.000 Gb/s available PCIe bandwidth, limited by 2.5 GT/s PCIe x4 link at 0000:05:01.0 (capable of 31.504 Gb/s with 8.0 GT/s PCIe x4 link)
+[53423.405965] pci 0000:08:04.0: PCI bridge to [bus 0d-2b]
+[53423.405982] pci 0000:08:04.0:   bridge window [mem 0xd4400000-0xdfffffff]
+[53423.405992] pci 0000:08:04.0:   bridge window [mem 0x6000000000-0x601fffffff 64bit pref]
+[53423.406164] pci_bus 0000:05: Allocating resources
+[53423.406271] pci 0000:08:04.0: bridge window [io  0x1000-0x0fff] to [bus 0d-2b] add_size 1000
+[53423.406279] pci 0000:07:00.0: bridge window [io  0x1000-0x1fff] to [bus 08-2b] add_size 1000
+[53423.406287] pcieport 0000:05:04.0: bridge window [io  0x1000-0x0fff] to [bus 2d-51] add_size 1000
+[53423.406301] pcieport 0000:05:04.0: BAR 13: no space for [io  size 0x1000]
+[53423.406304] pcieport 0000:05:04.0: BAR 13: failed to assign [io  size 0x1000]
+[53423.406306] pcieport 0000:05:04.0: BAR 13: no space for [io  size 0x1000]
+[53423.406307] pcieport 0000:05:04.0: BAR 13: failed to assign [io  size 0x1000]
+[53423.406309] pci 0000:07:00.0: BAR 13: no space for [io  size 0x2000]
+[53423.406310] pci 0000:07:00.0: BAR 13: failed to assign [io  size 0x2000]
+[53423.406311] pci 0000:07:00.0: BAR 13: assigned [io  0x2000-0x2fff]
+[53423.406312] pci 0000:07:00.0: BAR 13: [io  0x2000-0x2fff] (failed to expand by 0x1000)
+[53423.406313] pci 0000:07:00.0: failed to add 1000 res[13]=[io  0x2000-0x2fff]
+[53423.406315] pci 0000:08:03.0: BAR 13: assigned [io  0x2000-0x2fff]
+[53423.406316] pci 0000:08:04.0: BAR 13: no space for [io  size 0x1000]
+[53423.406317] pci 0000:08:04.0: BAR 13: failed to assign [io  size 0x1000]
+[53423.406318] pci 0000:08:03.0: BAR 13: assigned [io  0x2000-0x2fff]
+[53423.406319] pci 0000:08:04.0: BAR 13: no space for [io  size 0x1000]
+[53423.406320] pci 0000:08:04.0: BAR 13: failed to assign [io  size 0x1000]
+[53423.406321] pci 0000:08:00.0: PCI bridge to [bus 09]
+[53423.406334] pci 0000:08:00.0:   bridge window [mem 0xd4000000-0xd40fffff]
+[53423.406349] pci 0000:08:01.0: PCI bridge to [bus 0a]
+[53423.406357] pci 0000:08:01.0:   bridge window [mem 0xd4100000-0xd41fffff]
+[53423.406372] pci 0000:08:02.0: PCI bridge to [bus 0b]
+[53423.406379] pci 0000:08:02.0:   bridge window [mem 0xd4200000-0xd42fffff]
+[53423.406394] pci 0000:0c:00.0: BAR 2: assigned [io  0x2000-0x201f]
+[53423.406404] pci 0000:08:03.0: PCI bridge to [bus 0c]
+[53423.406407] pci 0000:08:03.0:   bridge window [io  0x2000-0x2fff]
+[53423.406415] pci 0000:08:03.0:   bridge window [mem 0xd4300000-0xd43fffff]
+[53423.406430] pci 0000:08:04.0: PCI bridge to [bus 0d-2b]
+[53423.406438] pci 0000:08:04.0:   bridge window [mem 0xd4400000-0xdfffffff]
+[53423.406444] pci 0000:08:04.0:   bridge window [mem 0x6000000000-0x601fffffff 64bit pref]
+[53423.406454] pci 0000:07:00.0: PCI bridge to [bus 08-2b]
+[53423.406457] pci 0000:07:00.0:   bridge window [io  0x2000-0x2fff]
+[53423.406465] pci 0000:07:00.0:   bridge window [mem 0xd4000000-0xdfffffff]
+[53423.406470] pci 0000:07:00.0:   bridge window [mem 0x6000000000-0x601fffffff 64bit pref]
+[53423.406548] pcieport 0000:07:00.0: enabling device (0006 -> 0007)
+[53423.408625] pcieport 0000:08:03.0: enabling device (0006 -> 0007)
+[53423.410034] xhci_hcd 0000:09:00.0: xHCI Host Controller
+[53423.410040] xhci_hcd 0000:09:00.0: new USB bus registered, assigned bus number 3
+[53423.411650] xhci_hcd 0000:09:00.0: hcc params 0x200071e9 hci version 0x100 quirks 0x0000000000000410
+[53423.412322] usb usb3: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 5.16
+[53423.412325] usb usb3: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+[53423.412326] usb usb3: Product: xHCI Host Controller
+[53423.412328] usb usb3: Manufacturer: Linux 5.16.11-arch1-1 xhci-hcd
+[53423.412329] usb usb3: SerialNumber: 0000:09:00.0
+[53423.412550] hub 3-0:1.0: USB hub found
+[53423.412575] hub 3-0:1.0: 4 ports detected
+[53423.412877] xhci_hcd 0000:09:00.0: xHCI Host Controller
+[53423.412881] xhci_hcd 0000:09:00.0: new USB bus registered, assigned bus number 4
+[53423.412884] xhci_hcd 0000:09:00.0: Host supports USB 3.0 SuperSpeed
+[53423.412912] usb usb4: We don't know the algorithms for LPM for this host, disabling LPM.
+[53423.412924] usb usb4: New USB device found, idVendor=1d6b, idProduct=0003, bcdDevice= 5.16
+[53423.412926] usb usb4: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+[53423.412927] usb usb4: Product: xHCI Host Controller
+[53423.412928] usb usb4: Manufacturer: Linux 5.16.11-arch1-1 xhci-hcd
+[53423.412929] usb usb4: SerialNumber: 0000:09:00.0
+[53423.413135] hub 4-0:1.0: USB hub found
+[53423.413158] hub 4-0:1.0: 4 ports detected
+[53423.414206] xhci_hcd 0000:0a:00.0: xHCI Host Controller
+[53423.414212] xhci_hcd 0000:0a:00.0: new USB bus registered, assigned bus number 5
+[53423.415629] xhci_hcd 0000:0a:00.0: hcc params 0x200071e9 hci version 0x100 quirks 0x0000000000000410
+[53423.416239] usb usb5: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 5.16
+[53423.416242] usb usb5: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+[53423.416244] usb usb5: Product: xHCI Host Controller
+[53423.416246] usb usb5: Manufacturer: Linux 5.16.11-arch1-1 xhci-hcd
+[53423.416247] usb usb5: SerialNumber: 0000:0a:00.0
+[53423.416419] hub 5-0:1.0: USB hub found
+[53423.416447] hub 5-0:1.0: 4 ports detected
+[53423.416861] xhci_hcd 0000:0a:00.0: xHCI Host Controller
+[53423.416868] xhci_hcd 0000:0a:00.0: new USB bus registered, assigned bus number 6
+[53423.416871] xhci_hcd 0000:0a:00.0: Host supports USB 3.0 SuperSpeed
+[53423.416928] usb usb6: We don't know the algorithms for LPM for this host, disabling LPM.
+[53423.416949] usb usb6: New USB device found, idVendor=1d6b, idProduct=0003, bcdDevice= 5.16
+[53423.416953] usb usb6: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+[53423.416955] usb usb6: Product: xHCI Host Controller
+[53423.416956] usb usb6: Manufacturer: Linux 5.16.11-arch1-1 xhci-hcd
+[53423.416958] usb usb6: SerialNumber: 0000:0a:00.0
+[53423.417199] hub 6-0:1.0: USB hub found
+[53423.417225] hub 6-0:1.0: 4 ports detected
+[53423.418140] xhci_hcd 0000:0b:00.0: xHCI Host Controller
+[53423.418147] xhci_hcd 0000:0b:00.0: new USB bus registered, assigned bus number 7
+[53423.477123] xhci_hcd 0000:0b:00.0: hcc params 0x0200eec0 hci version 0x110 quirks 0x0000000000800010
+[53423.477581] usb usb7: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 5.16
+[53423.477585] usb usb7: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+[53423.477587] usb usb7: Product: xHCI Host Controller
+[53423.477588] usb usb7: Manufacturer: Linux 5.16.11-arch1-1 xhci-hcd
+[53423.477589] usb usb7: SerialNumber: 0000:0b:00.0
+[53423.477747] hub 7-0:1.0: USB hub found
+[53423.477764] hub 7-0:1.0: 2 ports detected
+[53423.477957] xhci_hcd 0000:0b:00.0: xHCI Host Controller
+[53423.477980] xhci_hcd 0000:0b:00.0: new USB bus registered, assigned bus number 8
+[53423.477985] xhci_hcd 0000:0b:00.0: Host supports USB 3.1 Enhanced SuperSpeed
+[53423.478071] usb usb8: We don't know the algorithms for LPM for this host, disabling LPM.
+[53423.478090] usb usb8: New USB device found, idVendor=1d6b, idProduct=0003, bcdDevice= 5.16
+[53423.478092] usb usb8: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+[53423.478094] usb usb8: Product: xHCI Host Controller
+[53423.478095] usb usb8: Manufacturer: Linux 5.16.11-arch1-1 xhci-hcd
+[53423.478097] usb usb8: SerialNumber: 0000:0b:00.0
+[53423.478515] hub 8-0:1.0: USB hub found
+[53423.478534] hub 8-0:1.0: 2 ports detected
+[53423.511400] pps pps0: new PPS source ptp0
+[53423.511510] igb 0000:0c:00.0: added PHC on eth0
+[53423.511512] igb 0000:0c:00.0: Intel(R) Gigabit Ethernet Network Connection
+[53423.511514] igb 0000:0c:00.0: eth0: (PCIe:2.5Gb/s:Width x1) 64:4b:f0:13:fb:1a
+[53423.511679] igb 0000:0c:00.0: eth0: PBA No: 000300-000
+[53423.511680] igb 0000:0c:00.0: Using MSI-X interrupts. 4 rx queue(s), 4 tx queue(s)
+[53423.512373] xhci_hcd 0000:0d:00.0: xHCI Host Controller
+[53423.512380] xhci_hcd 0000:0d:00.0: new USB bus registered, assigned bus number 9
+[53423.513500] igb 0000:0c:00.0 enp12s0: renamed from eth0
+[53423.513755] xhci_hcd 0000:0d:00.0: hcc params 0x200077c1 hci version 0x110 quirks 0x0000000200009810
+[53423.514147] usb usb9: New USB device found, idVendor=1d6b, idProduct=0002, bcdDevice= 5.16
+[53423.514149] usb usb9: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+[53423.514150] usb usb9: Product: xHCI Host Controller
+[53423.514151] usb usb9: Manufacturer: Linux 5.16.11-arch1-1 xhci-hcd
+[53423.514152] usb usb9: SerialNumber: 0000:0d:00.0
+[53423.514376] hub 9-0:1.0: USB hub found
+[53423.514391] hub 9-0:1.0: 2 ports detected
+[53423.514772] xhci_hcd 0000:0d:00.0: xHCI Host Controller
+[53423.514798] xhci_hcd 0000:0d:00.0: new USB bus registered, assigned bus number 10
+[53423.514812] xhci_hcd 0000:0d:00.0: Host supports USB 3.1 Enhanced SuperSpeed
+[53423.514918] usb usb10: New USB device found, idVendor=1d6b, idProduct=0003, bcdDevice= 5.16
+[53423.514929] usb usb10: New USB device strings: Mfr=3, Product=2, SerialNumber=1
+[53423.514932] usb usb10: Product: xHCI Host Controller
+[53423.514934] usb usb10: Manufacturer: Linux 5.16.11-arch1-1 xhci-hcd
+[53423.514936] usb usb10: SerialNumber: 0000:0d:00.0
+[53423.515117] hub 10-0:1.0: USB hub found
+[53423.515134] hub 10-0:1.0: 2 ports detected
+[53423.668009] usb 5-1: new high-speed USB device number 2 using xhci_hcd
+[53423.671332] usb 3-2: new full-speed USB device number 2 using xhci_hcd
+[53423.761330] usb 9-2: new high-speed USB device number 2 using xhci_hcd
+[53423.827143] usb 3-2: New USB device found, idVendor=2188, idProduct=6533, bcdDevice= 1.01
+[53423.827147] usb 3-2: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+[53423.827149] usb 3-2: Product: CalDigit Thunderbolt 3 Audio
+[53423.827150] usb 3-2: Manufacturer: CalDigit, Inc.
+[53423.878456] input: CalDigit, Inc. CalDigit Thunderbolt 3 Audio as /devices/pci0000:00/0000:00:1b.4/0000:04:00.0/0000:05:01.0/0000:07:00.0/0000:08:00.0/0000:09:00.0/usb3/3-2/3-2:1.3/0003:2188:6533.0016/input/input62
+[53423.904737] usb 9-2: New USB device found, idVendor=05ac, idProduct=1017, bcdDevice=40.09
+[53423.904741] usb 9-2: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[53423.904743] usb 9-2: Product: USB2.0 Hub
+[53423.904744] usb 9-2: Manufacturer: Apple Inc.
+[53423.904745] usb 9-2: SerialNumber: DLC9275021AKD5668
+[53423.906335] hub 9-2:1.0: USB hub found
+[53423.906640] hub 9-2:1.0: 2 ports detected
+[53423.931557] usb 6-4: new SuperSpeed USB device number 2 using xhci_hcd
+[53423.935110] hid-generic 0003:2188:6533.0016: input,hidraw0: USB HID v1.11 Device [CalDigit, Inc. CalDigit Thunderbolt 3 Audio] on usb-0000:09:00.0-2/input3
+[53423.950537] usb 6-4: New USB device found, idVendor=2188, idProduct=0747, bcdDevice=10.38
+[53423.950543] usb 6-4: New USB device strings: Mfr=3, Product=4, SerialNumber=5
+[53423.950544] usb 6-4: Product: Card Reader
+[53423.950546] usb 6-4: Manufacturer: CalDigit
+[53423.950547] usb 6-4: SerialNumber: 000000000010
+[53423.953203] usb-storage 6-4:1.0: USB Mass Storage device detected
+[53423.953546] scsi host0: usb-storage 6-4:1.0
+[53424.024906] usb 10-2: new SuperSpeed USB device number 2 using xhci_hcd
+[53424.045099] usb 10-2: New USB device found, idVendor=05ac, idProduct=1018, bcdDevice=40.09
+[53424.045102] usb 10-2: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[53424.045104] usb 10-2: Product: USB3.1 Hub
+[53424.045105] usb 10-2: Manufacturer: Apple Inc.
+[53424.045106] usb 10-2: SerialNumber: DLC9275021AKD5668
+[53424.047449] hub 10-2:1.0: USB hub found
+[53424.048152] hub 10-2:1.0: 1 port detected
+[53424.214670] usb 9-2.2: new full-speed USB device number 3 using xhci_hcd
+[53424.334542] usb 9-2.2: New USB device found, idVendor=05ac, idProduct=1463, bcdDevice=40.09
+[53424.334548] usb 9-2.2: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[53424.334550] usb 9-2.2: Product: USB-C Digital AV Multiport Adapter
+[53424.334551] usb 9-2.2: Manufacturer: Apple Inc
+[53424.334552] usb 9-2.2: SerialNumber: DLC9275021AKD5668
+[53424.979747] scsi 0:0:0:0: Direct-Access     CalDigit Card Reader      1038 PQ: 0 ANSI: 6
+[53424.980814] sd 0:0:0:0: [sda] Media removed, stopped polling
+[53424.982405] sd 0:0:0:0: [sda] Attached SCSI removable disk
+[53426.093613] usb 5-1: New USB device found, idVendor=046d, idProduct=085c, bcdDevice= 0.16
+[53426.093617] usb 5-1: New USB device strings: Mfr=0, Product=2, SerialNumber=1
+[53426.093618] usb 5-1: Product: C922 Pro Stream Webcam
+[53426.093619] usb 5-1: SerialNumber: 02AD91BF
+[53426.095235] usb 5-1: Found UVC 1.00 device C922 Pro Stream Webcam (046d:085c)
+[53426.097022] input: C922 Pro Stream Webcam as /devices/pci0000:00/0000:00:1b.4/0000:04:00.0/0000:05:01.0/0000:07:00.0/0000:08:01.0/0000:0a:00.0/usb5/5-1/5-1:1.0/input/input63
+[53426.371344] usb 5-3: new full-speed USB device number 3 using xhci_hcd
+[53426.514669] usb 5-3: New USB device found, idVendor=0853, idProduct=0111, bcdDevice= 0.01
+[53426.514673] usb 5-3: New USB device strings: Mfr=1, Product=2, SerialNumber=0
+[53426.514675] usb 5-3: Product: Realforce 87
+[53426.514676] usb 5-3: Manufacturer: Topre Corporation
+[53426.517864] input: Topre Corporation Realforce 87 as /devices/pci0000:00/0000:00:1b.4/0000:04:00.0/0000:05:01.0/0000:07:00.0/0000:08:01.0/0000:0a:00.0/usb5/5-3/5-3:1.0/0003:0853:0111.0017/input/input64
+[53426.571741] hid-generic 0003:0853:0111.0017: input,hidraw2: USB HID v1.11 Keyboard [Topre Corporation Realforce 87] on usb-0000:0a:00.0-3/input0
+
+More details: in tlp I have blacklisted the xhci_hcd device in my tlp.conf, look at these two outputs from tlp-stat -e. Right before and right after the reset happens:
+➜  udev-rules.d tlp-stat -e
+--- TLP 1.5.0 --------------------------------------------
+
++++ PCIe Active State Power Management
+/sys/module/pcie_aspm/parameters/policy = [default] performance powersave powersupersave (using BIOS preferences)
+
++++ PCIe Runtime Power Management
+Enable devices    = (disabled)
+Disable devices   = 0d:00.0
+Device denylist   = 0d:00.0
+Driver denylist   = amdgpu nouveau nvidia radeon
+
+/sys/bus/pci/devices/0000:00:00.0/power/control = on   (0x060000, Host bridge, skl_uncore)
+/sys/bus/pci/devices/0000:00:01.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:00:02.0/power/control = on   (0x030000, VGA compatible controller, i915)
+/sys/bus/pci/devices/0000:00:04.0/power/control = on   (0x118000, Signal processing controller, proc_thermal)
+/sys/bus/pci/devices/0000:00:08.0/power/control = on   (0x088000, System peripheral, no driver)
+/sys/bus/pci/devices/0000:00:12.0/power/control = on   (0x118000, Signal processing controller, intel_pch_thermal)
+/sys/bus/pci/devices/0000:00:14.0/power/control = on   (0x0c0330, USB controller, xhci_hcd)
+/sys/bus/pci/devices/0000:00:14.2/power/control = on   (0x050000, RAM memory, no driver)
+/sys/bus/pci/devices/0000:00:15.0/power/control = on   (0x0c8000, Serial bus controller, intel-lpss)
+/sys/bus/pci/devices/0000:00:16.0/power/control = on   (0x078000, Communication controller, mei_me)
+/sys/bus/pci/devices/0000:00:1b.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:00:1b.4/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:00:1c.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:00:1d.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:00:1d.6/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:00:1e.0/power/control = on   (0x078000, Communication controller, intel-lpss)
+/sys/bus/pci/devices/0000:00:1f.0/power/control = on   (0x060100, ISA bridge, no driver)
+/sys/bus/pci/devices/0000:00:1f.3/power/control = on   (0x040380, Audio device, snd_hda_intel)
+/sys/bus/pci/devices/0000:00:1f.4/power/control = on   (0x0c0500, SMBus, i801_smbus)
+/sys/bus/pci/devices/0000:00:1f.5/power/control = on   (0x0c8000, Serial bus controller, intel-spi)
+/sys/bus/pci/devices/0000:00:1f.6/power/control = on   (0x020000, Ethernet controller, e1000e)
+/sys/bus/pci/devices/0000:01:00.0/power/control = on   (0x030000, VGA compatible controller, nvidia)
+/sys/bus/pci/devices/0000:01:00.1/power/control = on   (0x040300, Audio device, snd_hda_intel)
+/sys/bus/pci/devices/0000:02:00.0/power/control = on   (0x010802, Non-Volatile memory controller, nvme)
+/sys/bus/pci/devices/0000:04:00.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:05:00.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:05:01.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:05:02.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:05:04.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:06:00.0/power/control = on   (0x088000, System peripheral, thunderbolt)
+/sys/bus/pci/devices/0000:07:00.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:08:00.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:08:01.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:08:02.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:08:03.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:08:04.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:09:00.0/power/control = on   (0x0c0330, USB controller, xhci_hcd)
+/sys/bus/pci/devices/0000:0a:00.0/power/control = on   (0x0c0330, USB controller, xhci_hcd)
+/sys/bus/pci/devices/0000:0b:00.0/power/control = on   (0x0c0330, USB controller, xhci_hcd)
+/sys/bus/pci/devices/0000:0c:00.0/power/control = on   (0x020000, Ethernet controller, igb)
+/sys/bus/pci/devices/0000:0d:00.0/power/control = on   (0x0c0330, USB controller, xhci_hcd)
+/sys/bus/pci/devices/0000:52:00.0/power/control = on   (0x028000, Network controller, iwlwifi)
+/sys/bus/pci/devices/0000:53:00.0/power/control = on   (0x080501, SD Host controller, sdhci-pci)
+
+➜  udev-rules.d tlp-stat -e
+--- TLP 1.5.0 --------------------------------------------
+
++++ PCIe Active State Power Management
+/sys/module/pcie_aspm/parameters/policy = [default] performance powersave powersupersave (using BIOS preferences)
+
++++ PCIe Runtime Power Management
+Enable devices    = (disabled)
+Disable devices   = 0d:00.0
+Device denylist   = 0d:00.0
+Driver denylist   = amdgpu nouveau nvidia radeon
+
+/sys/bus/pci/devices/0000:00:00.0/power/control = on   (0x060000, Host bridge, skl_uncore)
+/sys/bus/pci/devices/0000:00:01.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:00:02.0/power/control = on   (0x030000, VGA compatible controller, i915)
+/sys/bus/pci/devices/0000:00:04.0/power/control = on   (0x118000, Signal processing controller, proc_thermal)
+/sys/bus/pci/devices/0000:00:08.0/power/control = on   (0x088000, System peripheral, no driver)
+/sys/bus/pci/devices/0000:00:12.0/power/control = on   (0x118000, Signal processing controller, intel_pch_thermal)
+/sys/bus/pci/devices/0000:00:14.0/power/control = on   (0x0c0330, USB controller, xhci_hcd)
+/sys/bus/pci/devices/0000:00:14.2/power/control = on   (0x050000, RAM memory, no driver)
+/sys/bus/pci/devices/0000:00:15.0/power/control = on   (0x0c8000, Serial bus controller, intel-lpss)
+/sys/bus/pci/devices/0000:00:16.0/power/control = on   (0x078000, Communication controller, mei_me)
+/sys/bus/pci/devices/0000:00:1b.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:00:1b.4/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:00:1c.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:00:1d.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:00:1d.6/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:00:1e.0/power/control = on   (0x078000, Communication controller, intel-lpss)
+/sys/bus/pci/devices/0000:00:1f.0/power/control = on   (0x060100, ISA bridge, no driver)
+/sys/bus/pci/devices/0000:00:1f.3/power/control = on   (0x040380, Audio device, snd_hda_intel)
+/sys/bus/pci/devices/0000:00:1f.4/power/control = on   (0x0c0500, SMBus, i801_smbus)
+/sys/bus/pci/devices/0000:00:1f.5/power/control = on   (0x0c8000, Serial bus controller, intel-spi)
+/sys/bus/pci/devices/0000:00:1f.6/power/control = on   (0x020000, Ethernet controller, e1000e)
+/sys/bus/pci/devices/0000:01:00.0/power/control = on   (0x030000, VGA compatible controller, nvidia)
+/sys/bus/pci/devices/0000:01:00.1/power/control = on   (0x040300, Audio device, snd_hda_intel)
+/sys/bus/pci/devices/0000:02:00.0/power/control = on   (0x010802, Non-Volatile memory controller, nvme)
+/sys/bus/pci/devices/0000:04:00.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:05:00.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:05:01.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:05:02.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:05:04.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:06:00.0/power/control = on   (0x088000, System peripheral, thunderbolt)
+/sys/bus/pci/devices/0000:07:00.0/power/control = auto (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:08:00.0/power/control = auto (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:08:01.0/power/control = auto (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:08:02.0/power/control = auto (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:08:03.0/power/control = auto (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:08:04.0/power/control = on   (0x060400, PCI bridge, pcieport)
+/sys/bus/pci/devices/0000:09:00.0/power/control = on   (0x0c0330, USB controller, xhci_hcd)
+/sys/bus/pci/devices/0000:0a:00.0/power/control = on   (0x0c0330, USB controller, xhci_hcd)
+/sys/bus/pci/devices/0000:0b:00.0/power/control = on   (0x0c0330, USB controller, xhci_hcd)
+/sys/bus/pci/devices/0000:0c:00.0/power/control = on   (0x020000, Ethernet controller, igb)
+/sys/bus/pci/devices/0000:0d:00.0/power/control = auto (0x0c0330, USB controller, xhci_hcd)
+/sys/bus/pci/devices/0000:52:00.0/power/control = on   (0x028000, Network controller, iwlwifi)
+/sys/bus/pci/devices/0000:53:00.0/power/control = on   (0x080501, SD Host controller, sdhci-pci)

@@ -1,0 +1,9 @@
+1. Following https://wiki.archlinux.org/title/Lenovo_ThinkPad_P1
+
+   - Section "Hybrid graphics with bbswitch only"
+   - this requires manual switching between discrete and integrated graphics mode.
+
+2. Install the appropriate NVIDIA graphics drivers (https://wiki.archlinux.org/title/NVIDIA)
+   - Found that `nvidia` is the right one
+   - Make sure to see the mkinitcpio section: add the module and regenerate!
+   - Installed the pacman hook from this page at /etc/pacman.d/hooks/nvidia.hook
